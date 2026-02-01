@@ -1,0 +1,42 @@
+{
+    "background.enabled":true,
+    "background.fullscreen": {
+      "images": ["/root/code/CArsenal/.vscode/background.jpg"],
+      "opacity": 0.85, 
+      "size": "cover",
+      "position": "center",
+      "interval": 0
+    },
+    "background.sidebar": {},
+    "background.panel": {},
+
+    "C_Cpp.errorSquiggles": "Disabled",
+    "C_Cpp.intelliSenseEngineFallback": "Disabled",
+    "C_Cpp.intelliSenseEngine": "Disabled",
+    "C_Cpp.autocomplete": "Disabled",
+    "clangd.detectExtensionConflicts": true,
+    "clangd.fallbackFlags": [],
+    "clangd.arguments": [
+        "--log=verbose",
+        "--pretty",
+        "--all-scopes-completion",
+        "--completion-style=bundled",
+        "--cross-file-rename",
+        "--header-insertion=iwyu",
+        "--header-insertion-decorators",
+        "--background-index",
+        "-j=2",
+        "--pch-storage=memory",
+        "--function-arg-placeholders=false",
+        "--compile-commands-dir=${workspaceFolder}/build/windows-debug/",
+        "--clang-tidy",
+        "--clang-tidy-checks=file:${workspaceFolder}/.clang-tidy",
+        "--clang-tidy-checks=bugprone-*,clang-analyzer-*,cppcoreguidelines-*,google-*,modernize-*,performance-*,portability-*,readability-*",
+        "--clang-tidy-checks=-google-build-using-namespace,-modernize-use-trailing-return-type",
+        "--fallback-style=file:${workspaceFolder}/.clang-format",
+        "--fallback-style=LLVM",
+    ],
+    "python-envs.defaultEnvManager": "ms-python.python:conda",
+    "python-envs.defaultPackageManager": "ms-python.python:conda",
+    "python-envs.pythonProjects": []
+}
