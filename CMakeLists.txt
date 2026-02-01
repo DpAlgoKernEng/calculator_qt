@@ -1,4 +1,4 @@
-# CMakeList.txt: guessGame 的 CMake 项目，在此处包括源代码并定义
+# CMakeList.txt: calculator 的 CMake 项目，在此处包括源代码并定义
 # 项目特定的逻辑。
 #
 cmake_minimum_required (VERSION 3.16)
@@ -12,7 +12,7 @@ endif()
 # 禁用 vcpkg 的外部包含隔离（解决 type_traits 找不到的问题）
 set(VCPKG_USE_EXTERNAL_I OFF)
 
-project ("guessGame" VERSION 1.0.0 LANGUAGES CXX)
+project ("calculator" VERSION 1.0.0 LANGUAGES CXX)
 
 # 查找 Qt6 库
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
@@ -35,21 +35,22 @@ if(NOT DEFINED VCPKG_ROOT)
 endif()
 
 # 将源代码添加到此项目的可执行文件。
-add_executable (guessGame WIN32
-    "src/guessGame.cpp"
-    "src/mainwindow.cpp"
-    "${CMAKE_SOURCE_DIR}/include/mainwindow.h"
-    "${CMAKE_SOURCE_DIR}/include/guessGame.h"
+add_executable (calculator WIN32
+    "src/calculator.cpp"
+    "src/calculatorwindow.cpp"
+    "src/evaluator.cpp"
+    "${CMAKE_SOURCE_DIR}/include/calculatorwindow.h"
+    "${CMAKE_SOURCE_DIR}/include/evaluator.h"
 )
 
 # 添加 include 目录
-target_include_directories(guessGame PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(calculator PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
 # 链接 Qt6 库
-target_link_libraries(guessGame PRIVATE Qt6::Widgets)
+target_link_libraries(calculator PRIVATE Qt6::Widgets)
 
 # 设置 C++ 标准
-set_target_properties(guessGame PROPERTIES
+set_target_properties(calculator PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
 )
@@ -79,14 +80,14 @@ if(WIN32)
         message(STATUS "Found windeployqt release: ${WINDEPLOYQT_RELEASE}")
         
         # 使用 windeployqt 自动部署（根据配置选择正确的工具）
-        add_custom_command(TARGET guessGame POST_BUILD
+        add_custom_command(TARGET calculator POST_BUILD
             COMMAND "${CMAKE_COMMAND}" -E echo "Deploying Qt runtime..."
             COMMAND "$<$<CONFIG:Debug>:${WINDEPLOYQT_DEBUG}>$<$<NOT:$<CONFIG:Debug>>:${WINDEPLOYQT_RELEASE}>"
                 --no-compiler-runtime
                 --no-system-d3d-compiler
                 --no-opengl-sw
                 --verbose 0
-                "$<TARGET_FILE:guessGame>"
+                "$<TARGET_FILE:calculator>"
             COMMENT "Deploying Qt runtime with windeployqt..."
         )
     else()
@@ -101,21 +102,21 @@ if(WIN32)
                 set(VCPKG_RELEASE_BIN_DIR "${VCPKG_INSTALLED_DIR}/bin")
                 set(VCPKG_RELEASE_PLUGINS_DIR "${VCPKG_INSTALLED_DIR}/Qt6/plugins")
                 
-                add_custom_command(TARGET guessGame POST_BUILD
+                add_custom_command(TARGET calculator POST_BUILD
                     COMMAND ${CMAKE_COMMAND} -E copy_if_different
                         "$<$<CONFIG:Debug>:${VCPKG_DEBUG_BIN_DIR}/Qt6Cored.dll>$<$<NOT:$<CONFIG:Debug>>:${VCPKG_RELEASE_BIN_DIR}/Qt6Core.dll>"
-                        "$<TARGET_FILE_DIR:guessGame>"
+                        "$<TARGET_FILE_DIR:calculator>"
                     COMMAND ${CMAKE_COMMAND} -E copy_if_different
                         "$<$<CONFIG:Debug>:${VCPKG_DEBUG_BIN_DIR}/Qt6Guid.dll>$<$<NOT:$<CONFIG:Debug>>:${VCPKG_RELEASE_BIN_DIR}/Qt6Gui.dll>"
-                        "$<TARGET_FILE_DIR:guessGame>"
+                        "$<TARGET_FILE_DIR:calculator>"
                     COMMAND ${CMAKE_COMMAND} -E copy_if_different
                         "$<$<CONFIG:Debug>:${VCPKG_DEBUG_BIN_DIR}/Qt6Widgetsd.dll>$<$<NOT:$<CONFIG:Debug>>:${VCPKG_RELEASE_BIN_DIR}/Qt6Widgets.dll>"
-                        "$<TARGET_FILE_DIR:guessGame>"
+                        "$<TARGET_FILE_DIR:calculator>"
                     COMMAND ${CMAKE_COMMAND} -E make_directory
-                        "$<TARGET_FILE_DIR:guessGame>/platforms"
+                        "$<TARGET_FILE_DIR:calculator>/platforms"
                     COMMAND ${CMAKE_COMMAND} -E copy_if_different
                         "$<$<CONFIG:Debug>:${VCPKG_DEBUG_PLUGINS_DIR}/platforms/qwindowsd.dll>$<$<NOT:$<CONFIG:Debug>>:${VCPKG_RELEASE_PLUGINS_DIR}/platforms/qwindows.dll>"
-                        "$<TARGET_FILE_DIR:guessGame>/platforms"
+                        "$<TARGET_FILE_DIR:calculator>/platforms"
                     COMMENT "Manually copying Qt runtime libraries..."
                 )
                 message(STATUS "Manual Qt DLL copy enabled (fallback)")
@@ -127,7 +128,7 @@ endif()
 # TODO: 如有需要，请添加测试并安装目标。
 
 # 安装配置
-install(TARGETS guessGame
+install(TARGETS calculator
     RUNTIME DESTINATION bin
     BUNDLE DESTINATION .
     COMPONENT Runtime
@@ -142,7 +143,7 @@ install(DIRECTORY include/
 
 # CPack 打包配置
 include(InstallRequiredSystemLibraries)
-set(CPACK_PACKAGE_NAME "guessGame")
+set(CPACK_PACKAGE_NAME "calculator")
 set(CPACK_PACKAGE_VENDOR "Unknown")
 set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A number guessing game")
@@ -154,8 +155,8 @@ set(CPACK_COMPONENTS_ALL Runtime Development)
 # Windows 特定配置
 if(WIN32)
     set(CPACK_GENERATOR "NSIS;ZIP")
-    set(CPACK_NSIS_DISPLAY_NAME "guessGame")
-    set(CPACK_NSIS_PACKAGE_NAME "guessGame")
+    set(CPACK_NSIS_DISPLAY_NAME "calculator")
+    set(CPACK_NSIS_PACKAGE_NAME "calculator")
     set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
     set(CPACK_NSIS_URL_INFO_ABOUT "https://example.com")
     set(CPACK_NSIS_CONTACT "unknown@example.com")
