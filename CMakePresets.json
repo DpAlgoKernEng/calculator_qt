@@ -98,7 +98,7 @@
                 "CMAKE_CXX_COMPILER": "clang++"
             },
             "environment": {
-                "VCPKG_ROOT": "/Users/minghui.liu/code_soft/open_code/vcpkg"
+                "VCPKG_ROOT": "/Users/minghui.liu/code/open/vcpkg"
             }
         },
         {
@@ -112,7 +112,7 @@
                 "CMAKE_CXX_COMPILER": "clang++"
             },
             "environment": {
-                "VCPKG_ROOT": "/Users/minghui.liu/code_soft/open_code/vcpkg"
+                "VCPKG_ROOT": "/Users/minghui.liu/code/open/vcpkg"
             }
         }
     ],
