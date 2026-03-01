@@ -34,13 +34,13 @@ CalculatorWindow::~CalculatorWindow()
 }
 
 /**
- * @brief 设置游戏用户界面
- * 
- * 创建游戏的所有UI组件，包括：
- * 1. 游戏设置区域（范围选择、新游戏按钮）
- * 2. 游戏区域（输入框、提交按钮、提示标签、尝试次数显示）
- * 3. 信号槽连接，处理用户交互
- * 4. 设置初始焦点到输入框
+ * @brief 设置计算器用户界面
+ *
+ * 创建计算器的所有UI组件，包括：
+ * 1. 表达式显示区域
+ * 2. 数字按钮（0-9）和操作符按钮（+、-、*、/）
+ * 3. 括号按钮和功能按钮（清除、等于）
+ * 4. 信号槽连接，处理用户交互
  */
 void CalculatorWindow::setupUI()
 {
@@ -79,6 +79,7 @@ void CalculatorWindow::setupUI()
     rightParenButton = new QPushButton(")", centralWidget);
     clearButton = new QPushButton("C", centralWidget);
     equalsButton = new QPushButton("=", centralWidget);
+    decimalButton = new QPushButton(".", centralWidget);
     
     // 设置按钮字体
     QFont operatorFont("Arial", 12);
@@ -90,6 +91,7 @@ void CalculatorWindow::setupUI()
     rightParenButton->setFont(operatorFont);
     clearButton->setFont(operatorFont);
     equalsButton->setFont(operatorFont);
+    decimalButton->setFont(operatorFont);
     
     // 连接操作符按钮信号
     connect(addButton, &QPushButton::clicked, this, [this]() { onOperatorClicked("+"); });
@@ -100,6 +102,7 @@ void CalculatorWindow::setupUI()
     connect(rightParenButton, &QPushButton::clicked, this, [this]() { onParenthesisClicked(")"); });
     connect(clearButton, &QPushButton::clicked, this, &CalculatorWindow::clearExpression);
     connect(equalsButton, &QPushButton::clicked, this, &CalculatorWindow::evaluateExpression);
+    connect(decimalButton, &QPushButton::clicked, this, &CalculatorWindow::onDecimalClicked);
     
     // 布局按钮
     // 第一行：7 8 9 + (
@@ -123,8 +126,9 @@ void CalculatorWindow::setupUI()
     buttonLayout->addWidget(multiplyButton, 2, 3);
     buttonLayout->addWidget(clearButton, 2, 4);
     
-    // 第四行：0 . = / (空)
+    // 第四行：0 . / =
     buttonLayout->addWidget(digitButtons[0], 3, 0);
+    buttonLayout->addWidget(decimalButton, 3, 1);
     buttonLayout->addWidget(divideButton, 3, 3);
     buttonLayout->addWidget(equalsButton, 3, 4);
     
@@ -136,13 +140,12 @@ void CalculatorWindow::setupUI()
 }
 
 /**
- * @brief 生成随机秘密数字
- * 
- * 使用C++11的随机数库生成指定范围内的随机整数：
- * 1. 使用std::random_device获取真随机种子
- * 2. 使用std::mt19937作为随机数引擎
- * 3. 使用std::uniform_int_distribution生成均匀分布的整数
- * 4. 重置游戏状态（尝试次数、提示信息等）
+ * @brief 处理数字按钮点击
+ *
+ * 将点击的数字追加到当前表达式末尾：
+ * 1. 获取当前表达式文本
+ * 2. 将数字追加到表达式
+ * 3. 更新显示
  */
 void CalculatorWindow::onDigitClicked(const QString &digit)
 {
@@ -180,4 +183,10 @@ void CalculatorWindow::evaluateExpression()
     } catch (const std::exception &e) {
         QMessageBox::warning(this, "计算错误", QString("表达式错误: %1").arg(e.what()));
     }
+}
+
+void CalculatorWindow::onDecimalClicked()
+{
+    QString current = expressionDisplay->text();
+    expressionDisplay->setText(current + ".");
 }

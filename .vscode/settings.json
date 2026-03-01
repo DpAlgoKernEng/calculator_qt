@@ -28,7 +28,7 @@
         "-j=2",
         "--pch-storage=memory",
         "--function-arg-placeholders=false",
-        "--compile-commands-dir=${workspaceFolder}/build/windows-debug/",
+        "--compile-commands-dir=${workspaceFolder}/build/macos-debug/",
         "--clang-tidy",
         "--clang-tidy-checks=file:${workspaceFolder}/.clang-tidy",
         "--clang-tidy-checks=bugprone-*,clang-analyzer-*,cppcoreguidelines-*,google-*,modernize-*,performance-*,portability-*,readability-*",

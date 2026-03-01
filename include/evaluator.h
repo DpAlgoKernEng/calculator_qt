@@ -17,9 +17,14 @@
 /**
  * @class ExpressionEvaluator
  * @brief 数学表达式求值器类
- * 
+ *
  * 使用调度场算法（Shunting-yard algorithm）将中缀表达式转换为后缀表达式，
  * 然后求值。支持整数和浮点数运算。
+ *
+ * 限制：
+ * - 不支持负数（一元负号）
+ * - 不支持函数调用
+ * - 仅支持基本运算符：+、-、*、/
  */
 class ExpressionEvaluator {
 public:

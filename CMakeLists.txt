@@ -34,20 +34,33 @@ if(NOT DEFINED VCPKG_ROOT)
     endif()
 endif()
 
-# 将源代码添加到此项目的可执行文件。
-add_executable (calculator WIN32
-    "src/calculator.cpp"
-    "src/calculatorwindow.cpp"
+# 创建核心求值器库
+add_library(evaluator_lib STATIC
     "src/evaluator.cpp"
-    "${CMAKE_SOURCE_DIR}/include/calculatorwindow.h"
     "${CMAKE_SOURCE_DIR}/include/evaluator.h"
 )
 
 # 添加 include 目录
-target_include_directories(calculator PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(evaluator_lib PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
-# 链接 Qt6 库
-target_link_libraries(calculator PRIVATE Qt6::Widgets)
+# 设置 C++ 标准
+set_target_properties(evaluator_lib PROPERTIES
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED ON
+)
+
+# 将源代码添加到此项目的可执行文件。
+add_executable (calculator WIN32
+    "src/calculator.cpp"
+    "src/calculatorwindow.cpp"
+    "${CMAKE_SOURCE_DIR}/include/calculatorwindow.h"
+)
+
+# 链接求值器库到可执行文件
+target_link_libraries(calculator PRIVATE evaluator_lib Qt6::Widgets)
+
+# 添加 include 目录
+target_include_directories(calculator PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
 # 设置 C++ 标准
 set_target_properties(calculator PROPERTIES
@@ -126,6 +139,43 @@ if(WIN32)
 endif()
 
 # TODO: 如有需要，请添加测试并安装目标。
+
+# 启用测试
+enable_testing()
+
+# 使用 FetchContent 获取 Google Test
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.tar.gz
+)
+# 设置 gtest 为不构建 samples 和 tests
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+# 添加测试可执行文件
+add_executable(calculator_tests
+    tests/evaluator_test.cpp
+)
+
+# 链接测试目标
+target_link_libraries(calculator_tests
+    PRIVATE
+        gtest_main
+        evaluator_lib
+)
+
+# 添加 include 目录
+target_include_directories(calculator_tests PRIVATE ${CMAKE_SOURCE_DIR}/include)
+
+# 添加测试运行
+add_test(NAME calculator_tests COMMAND calculator_tests)
+
+# 设置测试可执行文件输出目录
+set_target_properties(calculator_tests PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/tests
+)
 
 # 安装配置
 install(TARGETS calculator

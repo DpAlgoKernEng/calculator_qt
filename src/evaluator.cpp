@@ -10,6 +10,32 @@
 
 using namespace std;
 
+namespace {
+    bool isValidNumber(const string& str) {
+        if (str.empty()) return false;
+
+        int dotCount = 0;
+        bool hasDigit = false;
+
+        for (size_t i = 0; i < str.length(); ++i) {
+            char ch = str[i];
+            if (isdigit(ch)) {
+                hasDigit = true;
+            } else if (ch == '.') {
+                dotCount++;
+                if (dotCount > 1) {
+                    return false; // 多个小数点
+                }
+            } else {
+                return false; // 无效字符
+            }
+        }
+
+        return hasDigit; // 必须至少有一个数字
+    }
+
+}
+
 double ExpressionEvaluator::evaluate(const string& expression) {
     if (expression.empty()) {
         return 0.0;
@@ -85,6 +111,13 @@ vector<string> ExpressionEvaluator::infixToPostfix(const string& expression) {
         char ch = expression[i];
         
         if (isspace(ch)) {
+            if (!number.empty()) {
+                if (!isValidNumber(number)) {
+                    throw invalid_argument("Invalid number format: " + number);
+                }
+                output.push_back(number);
+                number.clear();
+            }
             continue;
         }
         
@@ -92,6 +125,9 @@ vector<string> ExpressionEvaluator::infixToPostfix(const string& expression) {
             number += ch;
         } else {
             if (!number.empty()) {
+                if (!isValidNumber(number)) {
+                    throw invalid_argument("Invalid number format: " + number);
+                }
                 output.push_back(number);
                 number.clear();
             }
@@ -120,6 +156,9 @@ vector<string> ExpressionEvaluator::infixToPostfix(const string& expression) {
     }
     
     if (!number.empty()) {
+        if (!isValidNumber(number)) {
+            throw invalid_argument("Invalid number format: " + number);
+        }
         output.push_back(number);
     }
     

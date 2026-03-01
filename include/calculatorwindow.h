@@ -58,7 +58,12 @@ private slots:
      * @param digit 点击的数字字符
      */
     void onDigitClicked(const QString &digit);
-    
+
+    /**
+     * @brief 处理小数点按钮点击的槽函数
+     */
+    void onDecimalClicked();
+
     /**
      * @brief 处理操作符按钮点击的槽函数
      * @param op 点击的操作符字符
@@ -100,6 +105,7 @@ private:
     QPushButton *rightParenButton; ///< 右括号按钮
     QPushButton *clearButton;      ///< 清除按钮
     QPushButton *equalsButton;     ///< 等号按钮
+    QPushButton *decimalButton;    ///< 小数点按钮
 };
 
 #endif // CALCULATORWINDOW_H
